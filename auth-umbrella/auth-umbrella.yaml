@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: auth-umbrella
+  namespace: sbarnacle
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      app: auth-umbrella
+  template:
+    metadata:
+      labels:
+        app: auth-umbrella
+    spec:
+      containers:
+      - name: auth-umbrella
+        image: myregistrydomain.com:5000/sbarnacle/auth-umbrella:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "30m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1000m"
+        readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 40
+          httpGet:
+            path: /sbarnacle-oauth2/api/ping
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 40
+          periodSeconds: 60
+          httpGet:
+            path: /sbarnacle-oauth2/api/ping
+            port: 8080
+        env:
+        - name: "myapp.ldap.url"
+          value: "ldap://dirsrv-389ds.sbarnacle.svc.cluster.local:389"
+        - name: "server.port"
+          value: "8080"
+        - name: "myapp.jwt.expire_token_timer"
+          value: "3600"
+        - name: "myapp.jwt.expire_refresh_timer"
+          value: "36000"
+      imagePullSecrets:
+        - name: sbarnacle-docker-reg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-umbrella-svc
+  namespace: sbarnacle
+  labels:
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: auth-umbrella

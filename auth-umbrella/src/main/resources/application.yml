@@ -1,0 +1,30 @@
+server:
+  port: 8081
+  context-path: /sbarnacle-oauth2
+  servlet:
+    context-path: /sbarnacle-oauth2
+
+myapp:
+  client:
+    name: auth-umbrella
+    secret: auth-umbrella-pswd
+    scope: myapp
+  keystore:
+    name: sbarnacle-secret-auth.jks
+    pass: sbarnacle-secret-auth-secretstorexxx
+  key:
+    name: sbarnacle-auth-key
+    pass: sbarnacle-secret-auth@secret-key
+  ldap:
+    url: "ldap://dirsrv-389ds.sbarnacle.svc.cluster.local:389"
+    ldif: "classpath:test.ldif"
+    manager-dn-patterns: "cn=Directory Manager"
+    manager-password: "admin"
+    user-search-base:
+    user-dn-patterns: "uid={0},ou=People,dc=sbarnacle,dc=ru"
+    group-search-base: "ou=Groups,dc=sbarnacle,dc=ru"
+    group-search-filter: "(uniqueMember={0})"
+  jwt:
+    expire_token_timer: 3600
+    expire_refresh_timer: 36000
+

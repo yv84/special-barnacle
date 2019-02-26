@@ -1,0 +1,25 @@
+FROM tomcat:9-jre11
+
+COPY target/auth-umbrella-1.0.0-SNAPSHOT.war /usr/local/tomcat/webapps/sbarnacle-oauth2.war
+
+EXPOSE 8080
+
+
+# sudo docker ps 
+# 35fa92c2b1d7        sbarnacle             "catalina.sh run"        4 days ago          Up 4 days           0.0.0.0:8899->8080/tcp                                   romantic_hugle
+# sudo docker images -a
+# sbarnacle             latest              59b63f9f3034        4 days ago          180 MB
+# 
+
+# sudo update-alternatives --config java
+# export JAVA_HOME=/usr/lib/jvm/jdk-11
+# mvn clean package
+
+# sudo docker build -t sbarnacle/auth-umbrella:1.0 .
+# sudo docker tag sbarnacle/auth-umbrella:1.0 myregistrydomain.com:5000/sbarnacle/auth-umbrella:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/auth-umbrella:1.0
+# sudo docker pull myregistrydomain.com:5000/sbarnacle/auth-umbrella:1.0
+
+
+
+
