@@ -1,0 +1,165 @@
+# https://github.com/fabric8io/dirsrv-389ds
+
+# dirsrv-389ds-configmap.yml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    provider: fabric8
+    project: dirsrv-389ds
+    version: 1.0-SNAPSHOT
+    group: io.fabric8.devops.apps
+  name: dirsrv-389ds
+  namespace: sbarnacle
+data:
+  dirsrv-hostname: ""
+  dirsrv-suffix: dc=sbarnacle,dc=ru
+
+# dirsrv-389ds-sa.yml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    provider: fabric8
+    project: dirsrv-389ds
+    version: 1.0-SNAPSHOT
+    group: io.fabric8.devops.apps
+  name: dirsrv-389ds
+  namespace: sbarnacle
+
+# dirsrv-389ds-secret.yml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    provider: fabric8
+    project: dirsrv-389ds
+    version: 1.0-SNAPSHOT
+    group: io.fabric8.devops.apps
+  name: dirsrv-389ds
+  namespace: sbarnacle
+data:
+  # admin/admin/admin
+  dirsrvAdminUserName: YWRtaW4K
+  dirsrvAdminUserPassword: YWRtaW4K
+  dirsrvManagerPassword: YWRtaW4K
+
+# dirsrv-389ds-deployment.yml
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    fabric8.io/git-commit: 36496e4f60387e4a866cf7d5abc57851c638221b
+    fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=dirsrv-389ds&var-version=1.0-SNAPSHOT
+    fabric8.io/scm-con-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+    fabric8.io/scm-url: http://github.com/fabric8io/dirsrv-389ds/
+    fabric8.io/git-branch: master
+    fabric8.io/scm-devcon-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+    fabric8.io/scm-tag: 1.0-SNAPSHOT
+  labels:
+    provider: fabric8
+    project: dirsrv-389ds
+    version: 1.0-SNAPSHOT
+    group: io.fabric8.devops.apps
+  name: dirsrv-389ds
+  namespace: sbarnacle
+spec:
+  serviceName: "dirsrv-389ds"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dirsrv-389ds
+      project: dirsrv-389ds
+      provider: fabric8
+      version: 1.0-SNAPSHOT
+      group: io.fabric8.devops.apps
+  template:
+    metadata:
+      annotations:
+        fabric8.io/git-commit: 36496e4f60387e4a866cf7d5abc57851c638221b
+        fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=dirsrv-389ds&var-version=1.0-SNAPSHOT
+        fabric8.io/scm-con-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+        fabric8.io/scm-url: http://github.com/fabric8io/dirsrv-389ds/
+        fabric8.io/git-branch: master
+        fabric8.io/scm-devcon-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+        fabric8.io/scm-tag: 1.0-SNAPSHOT
+      labels:
+        app: dirsrv-389ds
+        provider: fabric8
+        project: dirsrv-389ds
+        version: 1.0-SNAPSHOT
+        group: io.fabric8.devops.apps
+    spec:
+      containers:
+      - env:
+        - name: DIRSRV_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: dirsrv-hostname
+              name: dirsrv-389ds
+        - name: DIRSRV_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: dirsrvAdminUserName
+              name: dirsrv-389ds
+        - name: DIRSRV_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: dirsrvAdminUserPassword
+              name: dirsrv-389ds
+        - name: DIRSRV_MANAGER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: dirsrvManagerPassword
+              name: dirsrv-389ds
+        - name: DIR_SUFFIX
+          valueFrom:
+            configMapKeyRef:
+              key: dirsrv-suffix
+              name: dirsrv-389ds
+        image: fabric8/389ds
+        imagePullPolicy: IfNotPresent
+        name: dirsrv-389ds
+        ports:
+        - containerPort: 389
+          name: ldap
+      serviceAccountName: dirsrv-389ds
+
+# dirsrv-389ds-svc.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    fabric8.io/git-commit: 36496e4f60387e4a866cf7d5abc57851c638221b
+    fabric8.io/git-branch: master
+    fabric8.io/scm-con-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+    fabric8.io/scm-devcon-url: scm:git:git@github.com:fabric8io/dirsrv-389ds.git
+    fabric8.io/scm-tag: 1.0-SNAPSHOT
+    fabric8.io/scm-url: http://github.com/fabric8io/dirsrv-389ds/
+  labels:
+    expose: "true"
+    provider: fabric8
+    project: dirsrv-389ds
+    version: 1.0-SNAPSHOT
+    group: io.fabric8.devops.apps
+  name: dirsrv-389ds
+  namespace: sbarnacle
+spec:
+  ports:
+  - port: 389
+    protocol: TCP
+    targetPort: 389
+  selector:
+    app: dirsrv-389ds
+    project: dirsrv-389ds
+    provider: fabric8
+    group: io.fabric8.devops.apps
+  type: NodePort
+
+
+  

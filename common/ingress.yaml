@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sbarnacle-ingress
+  namespace: sbarnacle
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    #- sbarnacle
+    secretName: sbarnacle-secret
+  rules:
+  #- host: sbarnacle
+  -  http:
+      paths:
+      - path: /sbarnacle-sbarnacle
+        backend:
+          serviceName: sbarnacle-svc
+          servicePort: 8080
+      - path: /sbarnacle-oauth2
+        backend:
+          serviceName: auth-umbrella-svc
+          servicePort: 8080

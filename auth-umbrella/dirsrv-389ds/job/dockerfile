@@ -1,0 +1,24 @@
+# sudo docker build -t sbarnacle/dirsrv-389ds-job:1.1 .
+# sudo docker tag sbarnacle/dirsrv-389ds-job:1.1 myregistrydomain.com:5000/sbarnacle/dirsrv-389ds-job:1.1
+# sudo docker push myregistrydomain.com:5000/sbarnacle/dirsrv-389ds-job:1.1
+
+FROM fabric8/389ds
+
+RUN mkdir -p /opt/dirsrv-389ds
+WORKDIR /opt/dirsrv-389ds
+COPY changelog /opt/dirsrv-389ds/changelog
+
+# Add command scripts
+ADD scripts /opt/dirsrv-389ds/scripts
+RUN chmod -R +x /opt/dirsrv-389ds/scripts
+RUN ln -s /opt/dirsrv-389ds/scripts/* /usr/local/bin/
+
+
+
+ENV LDAP_HOST dirsrv-389ds.sbarnacle.svc.cluster.local
+ENV LDAP_PORT 389
+ENV ROOT_DN cn=Directory Manager
+ENV DIRSRV_MANAGER_PASSWORD admin
+
+
+ENTRYPOINT ["dirsrv-389ds_command.sh"]

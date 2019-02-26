@@ -1,0 +1,107 @@
+# postgres-sbrncl-configmap.yaml
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-sbrncl-config
+  namespace: sbarnacle
+  labels:
+    app: postgres-sbrncl
+data:
+  POSTGRES_DB: sbarnacle
+  POSTGRES_USER: sbarnacle
+  POSTGRES_PASSWORD: sbarnacle
+
+# postgres-sbrncl-storage.yaml
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-sbrncl-pv-volume
+  namespace: sbarnacle
+  labels:
+    type: local
+    app: postgres-sbrncl
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/sbarnacle/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-sbrncl-pv-claim
+  namespace: sbarnacle
+  labels:
+    app: postgres-sbrncl
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+# postgres-sbrncl-deployment.yaml
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-sbrncl
+  namespace: sbarnacle
+spec:
+  serviceName: "postgres-sbrncl"
+  selector:
+    matchLabels:
+      app: postgres-sbrncl
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres-sbrncl
+    spec:
+      containers:
+        - name: postgres-sbrncl
+          image: myregistrydomain.com:5000/postgres:10
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "30m"
+            limits:
+              memory: "4048Mi"
+              cpu: "4000m"
+          envFrom:
+            - configMapRef:
+                name: postgres-sbrncl-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-sbrncl-pv-claim
+
+# postgres-sbrncl-service.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-sbrncl-svc
+  namespace: sbarnacle
+  labels:
+    app: postgres-sbrncl
+spec:
+  type: NodePort
+  ports:
+  - name: psqlport
+    port: 5432
+    protocol: TCP
+  selector:
+    app: postgres-sbrncl

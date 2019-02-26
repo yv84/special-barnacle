@@ -1,0 +1,7 @@
+version: 1
+
+dn: uid=admin,ou=People,dc=sbarnacle,dc=ru
+changetype: modify
+replace: userPassword
+userPassword: password
+

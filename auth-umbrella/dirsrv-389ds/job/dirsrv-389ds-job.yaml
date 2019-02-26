@@ -1,0 +1,22 @@
+# Проливка
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sbarnacle-dirsrv-389ds-job
+  namespace: sbarnacle
+spec:
+  # https://github.com/kubernetes/community/pull/583 - RestartPolicy=Never and BackoffLimit=0 - with run once under almost all circumstances / количество повторов - 0
+  backoffLimit: 0
+  activeDeadlineSeconds: 1000
+  ttlSecondsAfterFinished: 1000
+  template:
+    spec:
+      containers:
+      - name: sbarnacle-dirsrv-389ds-job
+        image: myregistrydomain.com:5000/sbarnacle/dirsrv-389ds-job:1.1
+        imagePullPolicy: Always
+        command: ["dirsrv-389ds_command.sh"]
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: sbarnacle-docker-reg
+
