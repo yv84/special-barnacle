@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  context-path: /sbarnacle-studious-spoon
+
+spring:
+    dataSource:
+        driverClassName: 'org.postgresql.Driver'
+        password: 'sbarnacle'
+        sql-script-encoding: UTF-8
+        url: 'jdbc:postgresql://postgres-sbrncl-svc.sbarnacle.svc.cluster.local:5432/sbarnacle'
+        # set spring.dataSource.url=jdbc:postgresql://192.168.100.141:32671/sbarnacle
+        username: 'sbarnacle'
+
+
