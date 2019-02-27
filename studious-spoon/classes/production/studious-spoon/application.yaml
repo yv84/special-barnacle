@@ -24,19 +24,19 @@ app:
     jwtExpirationInMs:
         604800000
     jwtSecret:
-        sbarnacle-secret-auth@secret-key
+        myapp@uthk3y
     jwt_token_rca_public_key: |
         -----BEGIN PUBLIC KEY-----
-        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhYUpzh/qPZMdXkN9Ybee
-        ZHBvoILIDQijVJh2lu9Lr90OxXFTe6cf9+bQOrhYop9jI1iG7atr2KHpFXlndDEQ
-        DIuVbqTRAV3jrrb+N/sUrCeBesmgNMQwlCRcgU8+BrtZqqx2DTLWYqDkS6m3XgQk
-        y/+V/qIn70U/b0tf0sAdClDmrIvMHZ0xKxmidABow4t4yzxc+fNfSy5ArzMdJabv
-        +2Rdheb3JuyYqCXHOP2kG9vvaLT0HSmLgqqJ4/T2FX3t0MqzLO3W5U3a/bTiagtO
-        3z8aXPTBZffBCi9gNXV5lpIASXTW8rU7brlVrxsiGcVJBUpX20k0Uo3BpBSNEp5H
-        YwIDAQAB
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3qhkuUYr27zrJvvD0PyK
+        HTwO5OD+ImnWjUlZkDO1Ya76cbfu/FCU9dq0AGh2knzUDdNfIJsyBGroFPDeHZXj
+        5Ho/vtt3hl6BUtwAR0KVJemF/tQO4pdhh5aboaLOvqFLHprAWJKSWku4MAcP8LXD
+        RW364TdgWWX9wgSGhbSRhu/JDujv6e/Hfi42DagxwuGmkYTX5js4C4//otLt63dO
+        JVROWmqp52tCmR5aDtybmlMH6DGAcNNwo74FnrCCiogx6b/ZqpQ11UUQEmpRdpME
+        TgkrN1TQqGzS3J02U09g89wKciNNIOv2QNDuLZwmjr4jmeW+EIDcbOHPrMKO5ggC
+        ZQIDAQAB
         -----END PUBLIC KEY-----
 
 management:
     security:
-
+        enabled: false
 

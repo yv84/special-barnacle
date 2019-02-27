@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: studious-spoon
+
+        
+logging:
+  level:
+    root: DEBUG
+    org.springframework.security: DEBUG 
+    org.springframework.security.web.FilterChainProxy: DEBUG
+
