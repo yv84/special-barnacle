@@ -35,12 +35,8 @@ public class OAuth2ResourceServerConfigJwt extends ResourceServerConfigurerAdapt
     @Value("${app.jwt_token_rca_public_key}")
     private String jwtTokenRcaPublicKey;
 
-    @Autowired
-    private AuthenticationEntryPoint unauthorizedHandler;
-    
     
     /**
-     * curl -i -X POST -d username=admin -d password=password -c 'C:\Temp\1\cookies.txt' http://localhost:8899/sbarnacle-studious-spoon/login-check
      * curl -i --header "Accept:application/json" -X GET -b 'C:\Temp\1\cookies.txt' http://localhost:8899/sbarnacle-studious-spoon/ping/ping
      */
     @Override
@@ -50,16 +46,12 @@ public class OAuth2ResourceServerConfigJwt extends ResourceServerConfigurerAdapt
             .cors()
         .and()
             .csrf().disable()
-        .exceptionHandling()
-            .authenticationEntryPoint(unauthorizedHandler) // .accessDeniedHandler(accessDeniedHandler);
-        .and()
         .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         .and()
             .httpBasic()
         .and().authorizeRequests()
             .antMatchers("/metrics").permitAll()
-            .antMatchers("/public/**").permitAll()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers("/api/ping/ping").permitAll()
             .antMatchers(HttpMethod.POST,"/**").authenticated()

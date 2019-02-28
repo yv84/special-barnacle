@@ -1,25 +1,20 @@
-FROM tomcat:9-jre11
-
-COPY target/sping-boot-app-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/studious-spoon.war
-
+FROM openjdk:11-slim
+ADD /build/libs/studious-spoon-0.0.1-SNAPSHOT.jar dockerdemo.jar
 EXPOSE 8080
-
-# sudo docker ps 
-# 35fa92c2b1d7        studious-spoon             "catalina.sh run"        4 days ago          Up 4 days           0.0.0.0:8899->8080/tcp                                   romantic_hugle
-# sudo docker images -a
-# studious-spoon             latest              59b63f9f3034        4 days ago          180 MB
-# 
-# mvn clean package
-# sudo docker stop 35fa92c2b1d7 && sudo docker rmi 59b63f9f3034
-# sudo docker build -t studious-spoon/studious-spoon:1.0 .
-# sudo docker tag studious-spoon/studious-spoon:1.0 myregistrydomain.com:5000/studious-spoon/studious-spoon:1.0
-# sudo docker push myregistrydomain.com:5000/studious-spoon/studious-spoon:1.0
-# sudo docker pull myregistrydomain.com:5000/studious-spoon/studious-spoon:1.0
-
-# sudo docker run -it --rm -d --name romantic_hugle -p 8899:8080 studious-spoon
+ENTRYPOINT ["java", "-jar", "dockerdemo.jar"]
 
 
 
-# sudo docker run -it --rm  -d --link studious-spoon_psql:ecompsql --name romantic_hugle -p 8899:8080 studious-spoon
+
+
+#
+# chmod +x gradlew
+# ./gradlew clean package
+#
+# sudo docker build -t sbarnacle/studious-spoon:1.0 .
+# sudo docker tag sbarnacle/studious-spoon:1.0 myregistrydomain.com:5000/sbarnacle/studious-spoon:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/studious-spoon:1.0
+
+
 
 

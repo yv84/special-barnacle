@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: studious-spoon
-        image: myregistrydomain.com:5000/sbarnacle/studious-spoon:1.2
+        image: myregistrydomain.com:5000/sbarnacle/studious-spoon:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -35,13 +35,13 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 40
           httpGet:
-            path: /studious-spoon/api/auth/ping
+            path: /sbarnacle-studious-spoon/api/ping/ping
             port: 8080
         livenessProbe:
           initialDelaySeconds: 40
           periodSeconds: 60
           httpGet:
-            path: /studious-spoon/api/auth/ping
+            path: /sbarnacle-studious-spoon/api/ping/ping
             port: 8080
         env:
         - name: "spring.datasource.url"
@@ -51,7 +51,7 @@ spec:
         - name: "spring.datasource.password"
           value: "sbarnacle"
         - name: "app.jwtSecret"
-          value: "SecretApp"
+          value: "sbarnacle-secret-auth@secret-key"
         - name: "app.jwt_token_rca_public_key"
           value: |
                   -----BEGIN PUBLIC KEY-----

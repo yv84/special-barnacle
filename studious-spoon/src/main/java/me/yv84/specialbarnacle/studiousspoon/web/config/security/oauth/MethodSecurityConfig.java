@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecur
  *
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = false)
 public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
