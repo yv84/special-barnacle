@@ -1,4 +1,8 @@
-#https://github.com/kubernetes/contrib
+# thanks to
+# - https://github.com/ChethanTech/TestFlink/blob/a54e30c088556ab1066a08004839afa4b5b56c7f/full-stack.yml
+# - https://github.com/Yolean/kubernetes-kafka
+# - https://stackoverflow.com/a/43983447/1645017
+# - https://rmoff.net/2018/08/02/kafka-listeners-explained/
 ---
 apiVersion: v1
 kind: Namespace
