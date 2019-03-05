@@ -1,0 +1,46 @@
+# kafka-zookeeper-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kafka-zookeeper-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-zoo1-claim1
+  namespace: sbarnacle-kafka
+  labels:
+    type: local
+    app: zookeeper
+spec:
+  storageClassName: kafka-zookeeper-storage
+  capacity:
+    storage: 100Mi
+  accessModes:
+  - ReadWriteOnce
+  claimRef:
+    namespace: sbarnacle-kafka
+    name: zoo1-claim1
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/sbarnacle/kafka-zookeeper-storage/zoo1-claim1"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: zoo1-claim1
+  namespace: sbarnacle-kafka
+  labels:
+    app: zookeeper
+spec:
+  storageClassName: kafka-zookeeper-storage
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+

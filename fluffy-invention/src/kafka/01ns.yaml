@@ -1,0 +1,6 @@
+#https://github.com/kubernetes/contrib
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sbarnacle-kafka

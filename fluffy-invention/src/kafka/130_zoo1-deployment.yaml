@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --file docker-compose-kafka.yaml
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zoo1
+  name: zoo1
+  namespace: sbarnacle-kafka
+spec:
+  replicas: 1
+  serviceName: zoo1
+  selector:
+    matchLabels:
+      app: zoo1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: zoo1
+    spec:
+      containers:
+      - env:
+        - name: KAFKA_LOG4J_LOGGERS
+          value: ERROR
+        - name: ZOOKEEPER_CLIENT_PORT
+          value: "2181"
+        - name: ZOOKEEPER_TICK_TIME
+          value: "2000"
+        - name: ZOO_MY_ID
+          value: "1"
+        - name: ZOO_PORT
+          value: "2181"
+        - name: ZOO_SERVERS
+          value: server.1=zoo1-0.zoo1.sbarnacle-kafka.svc.cluster.local:2888:3888
+        image: zookeeper:3.4.13
+        imagePullPolicy: Always
+        name: zoo1
+        ports:
+        - containerPort: 2181
+        volumeMounts:
+        - mountPath: /data
+          name: zoo1-claim0
+        - mountPath: /datalog
+          name: zoo1-claim1
+        resources:
+          requests:
+            cpu: 10m
+            memory: 100Mi
+        #  limits:
+        #    memory: 120Mi
+        readinessProbe:
+          tcpSocket:
+            port: 2181
+          timeoutSeconds: 5
+      hostname: zoo1
+      restartPolicy: Always
+      volumes:
+      - name: zoo1-claim0
+        persistentVolumeClaim:
+          claimName: zoo1-claim0
+      - name: zoo1-claim1
+        persistentVolumeClaim:
+          claimName: zoo1-claim1

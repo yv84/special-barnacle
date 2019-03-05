@@ -1,0 +1,48 @@
+# kafka-broker-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kafka-broker-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-kafka1-claim0
+  namespace: sbarnacle-kafka
+  labels:
+    type: local
+    app: kafka-broker-storage
+spec:
+  storageClassName: kafka-broker-storage
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  claimRef:
+    namespace: sbarnacle-kafka
+    name: kafka1-claim0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/sbarnacle/kafka-broker-storage/kafka1-claim0"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kafka1-claim0
+  namespace: sbarnacle-kafka
+  labels:
+    app: kafka
+spec:
+  storageClassName: kafka-broker-storage
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+
+

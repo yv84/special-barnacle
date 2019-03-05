@@ -1,4 +1,4 @@
-package me.v84.fluffyinvention;
+package me.v84.specialbarnacle.fluffyinvention;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
