@@ -9,7 +9,7 @@ ENTRYPOINT ["java", "-jar", "studious-spoon.jar"]
 
 #
 # chmod +x gradlew
-# ./gradlew clean package
+# ./gradlew clean build
 #
 # sudo docker build -t sbarnacle/studious-spoon:1.0 .
 # sudo docker tag sbarnacle/studious-spoon:1.0 myregistrydomain.com:5000/sbarnacle/studious-spoon:1.0

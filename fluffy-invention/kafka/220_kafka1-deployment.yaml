@@ -34,13 +34,18 @@ spec:
         - name: CONFLUENT_SUPPORT_CUSTOMER_ID
           value: anonymous
         - name: KAFKA_LISTENERS
-          value: INTERNAL_PLAINTEXT://0.0.0.0:9092,EXTERNAL_PLAINTEXT://0.0.0.0:9093
+          value: INTERNAL_PLAINTEXT://0.0.0.0:9092,EXTERNAL_PLAINTEXT_1://0.0.0.0:9093,EXTERNAL_PLAINTEXT_2://0.0.0.0:9094
         - name: KAFKA_ADVERTISED_LISTENERS
-          value: "INTERNAL_PLAINTEXT://localhost:9092,EXTERNAL_PLAINTEXT://192.168.100.141:30168"
-          # NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                         AGE
-          # service/kafka1   NodePort    10.98.161.41   <none>        9092:32531/TCP,9093:30168/TCP   6h15m
-          # service/zoo1     ClusterIP   None           <none>        2181/TCP,2888/TCP,3888/TCP      6h18m
-          #
+          value: "INTERNAL_PLAINTEXT://localhost:9092,EXTERNAL_PLAINTEXT_1://192.168.100.141:30168,EXTERNAL_PLAINTEXT_2://kafka1-0.kafka1.sbarnacle-kafka.svc.cluster.local:9094"
+          # EXTERNAL_PLAINTEXT_1 - outside kube, EXTERNAL_PLAINTEXT_2 - inside kube
+          # 192.168.100.141:30168 - хардкод для доступа из вне, пока не понятно как избавится от хардкода зависимости на Service IP:NodePort 192.168.100.141:30168
+          # 
+          # NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                                        AGE
+          # service/kafka1   NodePort    10.98.161.41   <none>        9092:32531/TCP,9093:30168/TCP,9094:32692/TCP   31h
+          # service/zoo1     ClusterIP   None           <none>        2181/TCP,2888/TCP,3888/TCP                     31h
+          # 
+          # enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+          #     inet 192.168.100.141  netmask 255.255.255.0  broadcast 192.168.100.255
           #value: INTERNAL_PLAINTEXT://kafka1-0.kafka1.sbarnacle-kafka.svc.cluster.local:19092,EXTERNAL_PLAINTEXT://127.0.0.1:9092
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
           value: "true"
@@ -49,7 +54,7 @@ spec:
         - name: KAFKA_INTER_BROKER_LISTENER_NAME
           value: INTERNAL_PLAINTEXT
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-          value: INTERNAL_PLAINTEXT:PLAINTEXT,EXTERNAL_PLAINTEXT:PLAINTEXT
+          value: INTERNAL_PLAINTEXT:PLAINTEXT,EXTERNAL_PLAINTEXT_1:PLAINTEXT,EXTERNAL_PLAINTEXT_2:PLAINTEXT
         - name: KAFKA_LOG4J_LOGGERS
           value: kafka.controller=DEBUG,kafka.producer.async.DefaultEventHandler=DEBUG,state.change.logger=DEBUG
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR

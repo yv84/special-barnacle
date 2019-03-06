@@ -7,13 +7,15 @@ spring:
     kafka:
         bootstrap-servers: 192.168.100.141:30168
         consumer:
-            auto-offset-reset: earliest
+            auto-offset-reset: 
+                # earliest
+                latest
             group-id: fluffy-invention-test2-consumers
             properties:
               spring:
                   json:
                       trusted:
-                          packages: me.v84.specialbarnacle.fluffyinvention.kafka
+                          packages: me.yv84.specialbarnacle.fluffyinvention.kafka
               value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
         producer:
            value-serializer: org.apache.kafka.common.serialization.StringSerializer

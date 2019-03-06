@@ -18,5 +18,8 @@ spec:
   - name: "9093"
     port: 9093
     targetPort: 9093
+  - name: "9094"
+    port: 9094
+    targetPort: 9094
   selector:
     app: kafka1
