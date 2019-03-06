@@ -1,4 +1,4 @@
-package me.v84.specialbarnacle.fluffyinvention.kafka;
+package me.yv84.specialbarnacle.fluffyinvention.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

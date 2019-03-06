@@ -1,7 +1,7 @@
 FROM openjdk:11-slim
-ADD /build/libs/studious-spoon-0.0.1-SNAPSHOT.jar dockerdemo.jar
+ADD /build/libs/studious-spoon-0.0.1-SNAPSHOT.jar studious-spoon.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "dockerdemo.jar"]
+ENTRYPOINT ["java", "-jar", "studious-spoon.jar"]
 
 
 

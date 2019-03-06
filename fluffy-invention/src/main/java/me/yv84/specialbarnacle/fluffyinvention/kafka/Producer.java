@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.v84.specialbarnacle.fluffyinvention.kafka;
+package me.yv84.specialbarnacle.fluffyinvention.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

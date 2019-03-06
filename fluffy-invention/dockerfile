@@ -1,0 +1,20 @@
+FROM openjdk:11-slim
+ADD /build/libs/fluffy-invention-0.0.1-SNAPSHOT.jar fluffy-invention.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "fluffy-invention.jar"]
+
+
+
+
+
+#
+# chmod +x gradlew
+# ./gradlew clean package
+#
+# sudo docker build -t sbarnacle/fluffy-invention:1.0 .
+# sudo docker tag sbarnacle/fluffy-invention:1.0 myregistrydomain.com:5000/sbarnacle/fluffy-invention:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/fluffy-invention:1.0
+
+
+
+

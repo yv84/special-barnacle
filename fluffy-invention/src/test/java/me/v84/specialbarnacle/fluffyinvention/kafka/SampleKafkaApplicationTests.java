@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.v84.specialbarnacle.fluffyinvention.kafka;
+package me.yv84.specialbarnacle.fluffyinvention.kafka;
 
 import java.util.ArrayList;
 import java.util.List;
