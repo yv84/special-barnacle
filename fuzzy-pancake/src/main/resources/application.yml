@@ -1,0 +1,8 @@
+spring:
+  data:
+    cassandra:
+      contactpoints: 192.168.100.141
+      port: 31817
+      keyspace-name: fuzzypancaketest
+      username: cassandra
+      password: cassandra

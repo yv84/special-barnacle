@@ -1,0 +1,7 @@
+// gradlew wrapper --gradle-version 5.2.1 --distribution-type all
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+	}
+}
+rootProject.name = 'fuzzy-pancake'
