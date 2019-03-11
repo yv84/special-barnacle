@@ -35,6 +35,8 @@ import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecif
 import org.springframework.data.cassandra.core.cql.keyspace.DropKeyspaceSpecification;
 import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories;
+import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 
 
 @Configuration
@@ -42,7 +44,8 @@ import org.springframework.data.cassandra.repository.config.EnableReactiveCassan
 //@ConfigurationProperties("spring.data.cassandra")
 //@EnableCassandraRepositories(basePackages = "me.yv84.specialbarnacle.fuzzypancake.persistance.repository")
 @EnableReactiveCassandraRepositories(basePackageClasses = {CassandraConfig.class})
-public class CassandraConfig extends AbstractReactiveCassandraConfiguration {
+//@EnableCassandraRepositories(basePackageClasses = {CassandraConfig.class})
+public class CassandraConfig extends AbstractCassandraConfiguration {
 
 	@Value("${spring.data.cassandra.keyspace-name}")
 	protected String keyspaceName;

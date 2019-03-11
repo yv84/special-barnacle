@@ -1,3 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    contextPath: /sbarnacle/fuzzy-pancake
+
+
+
 spring:
   data:
     cassandra:
@@ -6,3 +13,28 @@ spring:
       keyspace-name: fuzzypancaketest
       username: cassandra
       password: cassandra
+
+      
+                    
+app:
+    cloudkarafka:
+        topic: fluffy-invention-test2-default
+    jwtExpirationInMs:
+        604800000
+    jwtSecret:
+        sbarnacle-secret-auth@secret-key
+    jwt_token_rca_public_key: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhYUpzh/qPZMdXkN9Ybee
+        ZHBvoILIDQijVJh2lu9Lr90OxXFTe6cf9+bQOrhYop9jI1iG7atr2KHpFXlndDEQ
+        DIuVbqTRAV3jrrb+N/sUrCeBesmgNMQwlCRcgU8+BrtZqqx2DTLWYqDkS6m3XgQk
+        y/+V/qIn70U/b0tf0sAdClDmrIvMHZ0xKxmidABow4t4yzxc+fNfSy5ArzMdJabv
+        +2Rdheb3JuyYqCXHOP2kG9vvaLT0HSmLgqqJ4/T2FX3t0MqzLO3W5U3a/bTiagtO
+        3z8aXPTBZffBCi9gNXV5lpIASXTW8rU7brlVrxsiGcVJBUpX20k0Uo3BpBSNEp5H
+        YwIDAQAB
+        -----END PUBLIC KEY-----
+
+management:
+    security:
+
+
