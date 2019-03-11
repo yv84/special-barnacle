@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stunning-spork
+  namespace: sbarnacle
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      app: stunning-spork
+  template:
+    metadata:
+      labels:
+        app: stunning-spork
+    spec:
+      containers:
+      - name: stunning-spork
+        image: myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "30m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1000m"
+        readinessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          httpGet:
+            path: /
+            port: 80
+        livenessProbe:
+          initialDelaySeconds: 100
+          periodSeconds: 100
+          httpGet:
+            path: /
+            port: 80
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "80"
+        - name: REACT_APP_OAUTHURL
+          value: "/sbarnacle/oauth2"
+        - name: REACT_APP_sbarnacleURL
+          value: "/sbarnacle"
+
+      imagePullSecrets:
+        - name: sbarnacle-docker-reg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stunning-spork-svc
+  namespace: sbarnacle
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: stunning-spork

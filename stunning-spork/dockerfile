@@ -1,0 +1,40 @@
+# todo: перейти на ngnix 
+
+# https://github.com/praveenweb/node-docker
+# sudo docker build  -f dockerfile -t sbarnacle/stunning-spork:1.0 .
+# sudo docker tag sbarnacle/stunning-spork:1.0 myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker pull myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker run --rm -it --name serene_banach -d  -e NODE_ENV='production' -p 8081:3000 node-docker 
+
+# sudo docker ps  # - перечень запущенных контейнеров
+# sudo docker stop 287c6015f2d6 # - остановить контейнеров
+# sudo docker images -a # перечень существующих контейнеров
+# sudo docker rmi 3c644c58e917 # удалить контейнер
+
+FROM node:carbon
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+# RUN npm -g install serve
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY . /app
+
+# Build react/vue/angular bundle static files
+RUN npm run build
+
+
+EXPOSE 3000
+# If serving static files
+#CMD ["serve", "-s", "dist", "-p", "8080"]
+#CMD [ "node", "server.js" ]
+CMD ["npm", "run", "start"]
+

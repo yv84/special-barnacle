@@ -1,0 +1,33 @@
+# todo: перейти на ngnix 
+
+# https://github.com/praveenweb/node-docker
+# sudo docker build  -f dockerfile-yarn -t sbarnacle/stunning-spork:1.0 .
+# sudo docker tag sbarnacle/stunning-spork:1.0 myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker pull myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+# sudo docker run --rm -it --name serene_banach -d  -e NODE_ENV='production' -p 8081:3000 node-docker 
+
+# sudo docker ps  # - перечень запущенных контейнеров
+# sudo docker stop 287c6015f2d6 # - остановить контейнеров
+# sudo docker images -a # перечень существующих контейнеров
+# sudo docker rmi 3c644c58e917 # удалить контейнер
+
+
+
+
+# https://medium.com/@shakyShane/lets-talk-about-docker-artifacts-27454560384f
+
+# Stage 1 - the build process
+FROM node:7.10 as build-deps
+WORKDIR /usr/src/app
+COPY package.json yarn.lock ./
+RUN yarn
+COPY . ./
+RUN yarn build
+
+# Stage 2 - the production environment
+FROM nginx:1.12-alpine
+COPY --from=build-deps /usr/src/app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
