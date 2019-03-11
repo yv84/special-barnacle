@@ -1,0 +1,88 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: fuzzy-pancake
+  namespace: sbarnacle
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # how many pods we can add at a time
+      maxUnavailable: 0  # maxUnavailable define how many pods can be unavailable during the rolling update
+  selector:
+    matchLabels:
+      app: fuzzy-pancake
+  template:
+    metadata:
+      labels:
+        app: fuzzy-pancake
+    spec:
+      containers:
+      - name: fuzzy-pancake
+        image: myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "30m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1000m"
+        readinessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          httpGet:
+            path: /sbarnacle/fuzzy-pancake/api/ping/ping
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 120
+          periodSeconds: 120
+          httpGet:
+            path: /sbarnacle/fuzzy-pancake/api/ping/ping
+            port: 8080
+        env:
+        - name: "spring.data.cassandra.contactpoints"
+          value: "cassandra-0.cassandra.sbarnacle-cassandra.svc.cluster.local"
+        - name: "spring.data.cassandra.port"
+          value: "9042"
+        - name: "spring.data.cassandra.keyspace-name"
+          value: "fuzzypancaketest"
+        - name: "spring.data.cassandra.username"
+          value: "cassandra"
+        - name: "spring.data.cassandra.password"
+          value: "cassandra"
+        - name: "app.jwtSecret"
+          value: "sbarnacle-secret-auth@secret-key"
+        - name: "app.jwt_token_rca_public_key"
+          value: |
+                  -----BEGIN PUBLIC KEY-----
+                  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhYUpzh/qPZMdXkN9Ybee
+                  ZHBvoILIDQijVJh2lu9Lr90OxXFTe6cf9+bQOrhYop9jI1iG7atr2KHpFXlndDEQ
+                  DIuVbqTRAV3jrrb+N/sUrCeBesmgNMQwlCRcgU8+BrtZqqx2DTLWYqDkS6m3XgQk
+                  y/+V/qIn70U/b0tf0sAdClDmrIvMHZ0xKxmidABow4t4yzxc+fNfSy5ArzMdJabv
+                  +2Rdheb3JuyYqCXHOP2kG9vvaLT0HSmLgqqJ4/T2FX3t0MqzLO3W5U3a/bTiagtO
+                  3z8aXPTBZffBCi9gNXV5lpIASXTW8rU7brlVrxsiGcVJBUpX20k0Uo3BpBSNEp5H
+                  YwIDAQAB
+                  -----END PUBLIC KEY-----
+          
+      imagePullSecrets:
+        - name: sbarnacle-docker-reg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fuzzy-pancake-svc
+  namespace: sbarnacle
+  labels:
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: fuzzy-pancake

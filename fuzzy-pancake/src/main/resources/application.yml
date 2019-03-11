@@ -8,7 +8,9 @@ server:
 spring:
   data:
     cassandra:
+      # 192.168.100.141
       contactpoints: 192.168.100.141
+      # 31817
       port: 31817
       keyspace-name: fuzzypancaketest
       username: cassandra

@@ -1,0 +1,20 @@
+FROM openjdk:11-slim
+ADD /build/libs/fuzzy-pancake-0.0.1-SNAPSHOT.jar fuzzy-pancake.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "fuzzy-pancake.jar"]
+
+
+
+
+
+#
+# chmod +x gradlew
+# ./gradlew clean build
+#
+# sudo docker build -t sbarnacle/fuzzy-pancake:1.0 .
+# sudo docker tag sbarnacle/fuzzy-pancake:1.0 myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:1.0
+
+
+
+

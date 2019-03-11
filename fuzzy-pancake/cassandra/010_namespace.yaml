@@ -1,5 +1,5 @@
 # thanks to
-# - https://medium.com/merapar/deploy-a-high-available-cassandra-cluster-in-aws-using-kubernetes-bd8ba07bfcdd
+# - https://kubernetes.io/docs/tutorials/stateful-application/cassandra/
 ---
 apiVersion: v1
 kind: Namespace
