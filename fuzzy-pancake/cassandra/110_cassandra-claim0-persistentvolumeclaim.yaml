@@ -1,0 +1,47 @@
+# cassandra-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: cassandra-storage
+  namespace: sbarnacle-cassandra
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-cassandra-claim0
+  namespace: sbarnacle-cassandra
+  labels:
+    type: local
+    app: cassandra
+spec:
+  storageClassName: cassandra-storage
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  claimRef:
+    namespace: sbarnacle-cassandra
+    name: cassandra-claim0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/sbarnacle/cassandra-storage/cassandra-claim0"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: cassandra-claim0
+  namespace: sbarnacle-cassandra
+  labels:
+    app: cassandra
+spec:
+  storageClassName: cassandra-storage
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
