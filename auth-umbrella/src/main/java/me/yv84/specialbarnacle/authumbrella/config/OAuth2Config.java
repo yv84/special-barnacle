@@ -155,16 +155,20 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	private static class AmbaTokenEnhancer implements TokenEnhancer {
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-			final DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
-			final LdapUserDetails user = (LdapUserDetails) authentication.getPrincipal();
-			result.getAdditionalInformation().put("roles", user.getAuthorities());
-			result.getAdditionalInformation().put("dn", user.getDn());
-			result.getAdditionalInformation().put("account_expired", user.isAccountNonExpired());
-			result.getAdditionalInformation().put("enabled", user.isEnabled());
-			result.getAdditionalInformation().put("credentials_expired", user.isCredentialsNonExpired());
-			result.getAdditionalInformation().put("account_locked", user.isAccountNonLocked());
-			result.getAdditionalInformation().put("username", user.getUsername());
-			return result;
+			if (authentication.getPrincipal() instanceof LdapUserDetails) {
+				final DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
+				final LdapUserDetails user = (LdapUserDetails) authentication.getPrincipal();
+				result.getAdditionalInformation().put("roles", user.getAuthorities());
+				result.getAdditionalInformation().put("dn", user.getDn());
+				result.getAdditionalInformation().put("account_expired", user.isAccountNonExpired());
+				result.getAdditionalInformation().put("enabled", user.isEnabled());
+				result.getAdditionalInformation().put("credentials_expired", user.isCredentialsNonExpired());
+				result.getAdditionalInformation().put("account_locked", user.isAccountNonLocked());
+				result.getAdditionalInformation().put("username", user.getUsername());
+				return result;
+			} else {
+				return accessToken;
+			}
 		}
 	}
 
