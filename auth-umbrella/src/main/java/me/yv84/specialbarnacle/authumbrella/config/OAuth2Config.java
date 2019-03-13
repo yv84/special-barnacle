@@ -1,14 +1,13 @@
 package me.yv84.specialbarnacle.authumbrella.config;
 
 import java.security.KeyPair;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,12 +28,11 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.token.store.DelegatingJwtClaimsSetVerifier;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtClaimsSetVerifier;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import com.google.common.collect.Lists;
 
@@ -142,6 +140,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 		defaultTokenServices.setClientDetailsService(clientDetailsService);
 		defaultTokenServices.setTokenEnhancer(tokenEnhancerChain());
 		defaultTokenServices.setSupportRefreshToken(true);
+		defaultTokenServices.setReuseRefreshToken(false);
 		return defaultTokenServices;
 	}
 
@@ -155,8 +154,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	private static class AmbaTokenEnhancer implements TokenEnhancer {
 		@Override
 		public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+			final DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
 			if (authentication.getPrincipal() instanceof LdapUserDetails) {
-				final DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
 				final LdapUserDetails user = (LdapUserDetails) authentication.getPrincipal();
 				result.getAdditionalInformation().put("roles", user.getAuthorities());
 				result.getAdditionalInformation().put("dn", user.getDn());
@@ -166,9 +165,12 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 				result.getAdditionalInformation().put("account_locked", user.isAccountNonLocked());
 				result.getAdditionalInformation().put("username", user.getUsername());
 				return result;
+			} else if (authentication.getPrincipal() instanceof String) {
+				result.getAdditionalInformation().put("username", authentication.getPrincipal());
 			} else {
-				return accessToken;
+				return result;
 			}
+			return result;
 		}
 	}
 
@@ -206,6 +208,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	@Bean
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		converter.setJwtClaimsSetVerifier(jwtClaimsSetVerifier());
 		KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource(keystore), keystorepass.toCharArray())
 				.getKeyPair(key, keypass.toCharArray());
 		converter.setKeyPair(keyPair);
@@ -217,5 +220,14 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 		oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 	}
 	
+    @Bean
+    public JwtClaimsSetVerifier jwtClaimsSetVerifier() {
+    	return new DelegatingJwtClaimsSetVerifier(Arrays.asList(customJwtClaimVerifier()));
+    }
+    
+    @Bean
+    public JwtClaimsSetVerifier customJwtClaimVerifier() {
+        return new CustomClaimVerifier();
+    }
 
 }
