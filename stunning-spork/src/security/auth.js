@@ -1,4 +1,5 @@
-import {SERVER_URL} from './../config';
+import {OAUTH_SERVER_URL} from './../config';
+import {DATA_SERVER_URL} from './../config';
 import {checkResponseStatus} from '../handlers/responseHandlers';
 import headers from './../security/headers';
 import 'whatwg-fetch';
@@ -15,10 +16,8 @@ export default {
   },
 
   refreshToken() {
-    debugger;
     return fetch(
-      //`${SERVER_URL}/oauth/access_token`,
-      `${SERVER_URL}/sbarnacle/oauth2/oauth/token`,
+      `${OAUTH_SERVER_URL}/sbarnacle/oauth2/oauth/token`,
       { method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -42,8 +41,7 @@ export default {
 
   loggedIn() {  //<6>
     return localStorage.auth && fetch(
-        //`${SERVER_URL}/parfume`,
-        `${SERVER_URL}/sbarnacle/fluffy-invention/api/ping/ping-auth`,
+        `${DATA_SERVER_URL}/sbarnacle/studious-spoon/api/ping/ping-auth`,
         {headers: headers()})
         .then(checkResponseStatus)
         .then(() => { return true })

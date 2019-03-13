@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Garage from './Garage';
 import Auth from './security/auth';
 import Login from './Login';
-import {SERVER_URL} from './config';
+import {OAUTH_SERVER_URL} from './config';
 import {defaultErrorHandler} from './handlers/errorHandlers';
 import {checkResponseStatus, loginResponseHandler} from './handlers/responseHandlers';
 
@@ -73,7 +73,7 @@ class App extends Component {
   login = (e) => {
     console.log('login');
     e.preventDefault();
-    fetch(`${SERVER_URL}/sbarnacle/oauth2/oauth/token`, {
+    fetch(`${OAUTH_SERVER_URL}/sbarnacle/oauth2/oauth/token`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -92,28 +92,10 @@ class App extends Component {
     .then(checkResponseStatus) //<3>
     .then(response => loginResponseHandler(response, this.customLoginHandler)) //<4>
     .catch(error => defaultErrorHandler(error, this.customErrorHandler)); //<5>;
-};
-
-
-
-
-  //tag::login[]
-  login2 = (e) => {
-    console.log('login');
-    e.preventDefault(); //<1>
-
-    fetch(`${SERVER_URL}/sbarnacle/oauth2/oauth/token`, { //<2>
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state.userDetails)
-    }).then(checkResponseStatus) //<3>
-      .then(response => loginResponseHandler(response, this.customLoginHandler)) //<4>
-      .catch(error => defaultErrorHandler(error, this.customErrorHandler)); //<5>
   };
-  //end::login[]
+
+
+
 
   //tag::handler[]
   customLoginHandler = () => { //<1>

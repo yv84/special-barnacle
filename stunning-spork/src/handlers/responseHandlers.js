@@ -2,7 +2,6 @@ import Auth from '../security/auth';
 
 //<1>
 export const checkResponseStatus = (response) => {
-    debugger;
     if(response && response.token_type && response.token_type === "bearer") {
         return response;
     } else {
