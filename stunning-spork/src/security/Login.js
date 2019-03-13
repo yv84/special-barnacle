@@ -6,7 +6,7 @@ const Login = ({userDetails, error, inputChangeHandler, onSubmit}) => {
   return (
     <Row>
       <Jumbotron>
-        <h1>Welcome to the Garage</h1>
+        <h1>Welcome to the Site</h1>
       </Jumbotron>
       <Row>
         <Col sm={4} >

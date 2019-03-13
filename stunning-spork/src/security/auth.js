@@ -1,5 +1,4 @@
-import {OAUTH_SERVER_URL} from './../config';
-import {DATA_SERVER_URL} from './../config';
+import {OAUTH_SERVER_URL, DATA_SERVER_URL, OAUTH_LOGIN, OAUTH_PASSWORD} from './../config';
 import {checkResponseStatus} from '../handlers/responseHandlers';
 import headers from './../security/headers';
 import 'whatwg-fetch';
@@ -22,7 +21,7 @@ export default {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic '+ btoa('auth-umbrella:auth-umbrella-pswd'),
+          'Authorization': 'Basic '+ btoa(OAUTH_LOGIN + ':' + OAUTH_PASSWORD),
         },
         body: 'grant_type=refresh_token&refresh_token=' + JSON.parse(localStorage.auth)['refresh_token']
       })

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import Garage from './Garage';
-import Auth from './security/auth';
-import Login from './Login';
-import {OAUTH_SERVER_URL} from './config';
-import {defaultErrorHandler} from './handlers/errorHandlers';
-import {checkResponseStatus, loginResponseHandler} from './handlers/responseHandlers';
+import Spork from '../spork/Spork';
+import Auth from '../security/auth';
+import Login from '../security/Login';
+import {OAUTH_SERVER_URL, OAUTH_LOGIN, OAUTH_PASSWORD} from '../config';
+import {defaultErrorHandler} from '../handlers/errorHandlers';
+import {checkResponseStatus, loginResponseHandler} from '../handlers/responseHandlers';
 
 
 class App extends Component {
@@ -43,7 +43,7 @@ class App extends Component {
 
     (async () => {
       if (await Auth.loggedIn()) {
-        this.setState({route: 'garage'})
+        this.setState({route: 'spork'})
       } else {
         this.setState({route: 'login'});
       }
@@ -78,7 +78,7 @@ class App extends Component {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic '+ btoa('auth-umbrella:auth-umbrella-pswd'),
+            'Authorization': 'Basic '+ btoa(OAUTH_LOGIN + ':' + OAUTH_PASSWORD),
         },
         body: 'grant_type=password&username=' + this.state.userDetails.username + '&password=' + this.state.userDetails.password
     }).then((response) => {
@@ -99,7 +99,7 @@ class App extends Component {
 
   //tag::handler[]
   customLoginHandler = () => { //<1>
-    this.setState({route: 'garage'});
+    this.setState({route: 'spork'});
   };
 
   customErrorHandler = (error) => { //<2>
@@ -126,13 +126,13 @@ class App extends Component {
                                 inputChangeHandler={this.inputChangeHandler}
                                 onSubmit={this.login}/>;
 
-    const garageContent = <Garage logoutHandler={this.logoutHandler}/>;
+    const sporkContent = <Spork logoutHandler={this.logoutHandler}/>;
 
     switch (route) {
       case 'login':
         return loginContent;
-      case 'garage':
-        return garageContent;
+      case 'spork':
+        return sporkContent;
       default:
         return <p>Loading...</p>;
     }

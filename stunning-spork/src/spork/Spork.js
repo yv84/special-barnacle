@@ -1,7 +1,7 @@
 import React from 'react';
 import 'whatwg-fetch';
 
-class Garage extends React.Component {
+class Spork extends React.Component {
 
   constructor() {
     super();
@@ -19,4 +19,4 @@ class Garage extends React.Component {
   }
 }
 
-export default Garage;
+export default Spork;
