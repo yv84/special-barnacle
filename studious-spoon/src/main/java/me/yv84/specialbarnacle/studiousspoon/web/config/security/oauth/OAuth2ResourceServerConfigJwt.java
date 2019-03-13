@@ -48,8 +48,6 @@ public class OAuth2ResourceServerConfigJwt extends ResourceServerConfigurerAdapt
             .csrf().disable()
         .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-        .and()
-            .httpBasic()
         .and().authorizeRequests()
             .antMatchers("/metrics").permitAll()
             .antMatchers("/api/auth/**").permitAll()
@@ -58,9 +56,7 @@ public class OAuth2ResourceServerConfigJwt extends ResourceServerConfigurerAdapt
             .antMatchers(HttpMethod.PUT,"/**").authenticated()
             .antMatchers(HttpMethod.DELETE,"/**").authenticated()
             .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-            .anyRequest().authenticated()
-        .and()
-            .httpBasic();
+            .anyRequest().authenticated();
         // @formatter:on                
     }
 

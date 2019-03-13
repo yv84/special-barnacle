@@ -1,23 +1,33 @@
 server:
     port: 8080
-    context-path: /sbarnacle-studious-spoon
+    context-path: /sbarnacle/studious-spoon
     servlet:
-        contextPath: /sbarnacle-studious-spoon
+        contextPath: /sbarnacle/studious-spoon
 
 spring:
-    dataSource:
+   dataSource:
         driverClassName: 'org.postgresql.Driver'
         password: 'sbarnacle'
         sql-script-encoding: UTF-8
-        url: 'jdbc:postgresql://postgres-sbrncl-svc.sbarnacle.svc.cluster.local:5432/sbarnacle'
+        url: 'jdbc:postgresql://192.168.100.141:32671/sbarnacle'
+        #'jdbc:postgresql://postgres-sbrncl-svc.sbarnacle.svc.cluster.local:5432/sbarnacle'
         # set spring.dataSource.url=jdbc:postgresql://192.168.100.141:32671/sbarnacle
         username: 'sbarnacle'
-    jpa:
+   jpa:
         properties:
             hibernate:
                 temp:
                     use_jdbc_metadata_defaults:
                         false
+        databasePlatform: 'org.hibernate.dialect.PostgreSQLDialect'
+        showSql: true
+        hibernate:
+           ddl-auto:
+              update
+   devtools:
+      restart:
+         enabled:
+            false
 
                     
 app:

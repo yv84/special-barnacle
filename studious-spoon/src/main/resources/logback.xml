@@ -21,6 +21,8 @@
         </encoder>
     </appender>
     
+    <logger name="org.apache.tomcat.util.net.NioEndpoint" level="ERROR" />
+    
     <root level="TRACE">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="file" />
