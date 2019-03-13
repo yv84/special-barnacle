@@ -35,12 +35,15 @@ export default {
       })
       .then(checkResponseStatus)
       .then((a) => localStorage.auth = JSON.stringify(a))
-      .catch(() => { throw new Error("Unable to refresh!")})
+      .catch(() => {
+        this.logOut();
+        throw new Error("Unable to refresh!")
+      })
   },
 
   loggedIn() {  //<6>
     return localStorage.auth && fetch(
-        `${DATA_SERVER_URL}/sbarnacle/studious-spoon/api/ping/ping-auth`,
+        `${DATA_SERVER_URL}/sbarnacle/fluffy-invention/api/ping/ping-auth`,
         {headers: headers()})
         .then(checkResponseStatus)
         .then(() => { return true })
