@@ -1,0 +1,46 @@
+# from https://github.com/zmwilliam/docker-liquibase/blob/master/Dockerfile
+# sudo docker build -t sbarnacle/psql-lb-job:1.0 .
+# sudo docker tag sbarnacle/psql-lb-job:1.0 myregistrydomain.com:5000/sbarnacle/psql-lb-job:1.0
+# sudo docker push myregistrydomain.com:5000/sbarnacle/psql-lb-job:1.0
+FROM openjdk:8-jre-alpine
+
+RUN apk add --update curl bash && \
+    rm -rf /var/cache/apk/*
+
+# Create a directory for liquibase
+RUN mkdir -p /opt/liquibase /opt/jdbc_drivers
+
+WORKDIR /opt/liquibase
+
+ENV LIQUIBASE_VERSION 3.5.3
+
+
+
+# Get liquibase
+COPY liquibase-3.5.3-bin.tar.gz /opt/liquibase/
+RUN  tar xfvz /opt/liquibase/liquibase-3.5.3-bin.tar.gz
+RUN chmod +x /opt/liquibase/liquibase && \
+    ln -s /opt/liquibase/liquibase /usr/local/bin/
+
+ENV POSTGRESQL_VERSION 42.2.4
+
+# Get the postgres JDBC driver
+ADD postgresql-42.2.4.jar /opt/jdbc_drivers/postgresql.jar
+
+# Add command scripts
+ADD scripts /opt/liquibase/scripts
+RUN chmod -R +x /opt/liquibase/scripts
+RUN ln -s /opt/liquibase/scripts/* /usr/local/bin/
+
+
+COPY . /changelogs
+
+
+ENV DATABASE_USERNAME sbarnacle
+ENV DATABASE_PASSWORD sbarnacle
+ENV DATABASE_HOST postgres-sbrncl-svc.sbarnacle.svc.cluster.local
+ENV DATABASE_PORT 5432
+ENV DATABASE_NAME sbarnacle
+
+
+ENTRYPOINT ["liquibase_command.sh"]

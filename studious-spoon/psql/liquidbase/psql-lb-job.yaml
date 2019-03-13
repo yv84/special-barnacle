@@ -1,0 +1,34 @@
+# Проливка
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: psql-lb-job
+  namespace: sbarnacle
+spec:
+  # https://github.com/kubernetes/community/pull/583 - RestartPolicy=Never and BackoffLimit=0 - with run once under almost all circumstances / количество повторов - 0
+  backoffLimit: 0
+  activeDeadlineSeconds: 1000
+  ttlSecondsAfterFinished: 1000
+  template:
+    spec:
+      containers:
+      - name: psql-lb-job
+        # https://github.com/sequenceiq/docker-liquibase
+        image: myregistrydomain.com:5000/sbarnacle/psql-lb-job:1.0
+        imagePullPolicy: Always
+        command: ["liquibase_command.sh", "update"]
+        env:
+          - name: "DATABASE_USERNAME"
+            value: "sbarnacle"
+          - name: "DATABASE_PASSWORD"
+            value: "sbarnacle"
+          - name: "DATABASE_HOST"
+            value: "postgres-sbrncl-svc.sbarnacle.svc.cluster.local"
+          - name: "DATABASE_PORT"
+            value: "5432"
+          - name: "DATABASE_NAME"
+            value: "sbarnacle"
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: sbarnacle-docker-reg
+

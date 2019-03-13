@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="vyudintsev" id="1.00.01" >
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">SELECT 1</sqlCheck>
+        </preConditions>
+        <sqlFile path="data.sql" encoding="UTF-8" relativeToChangelogFile="true"/>
+        <comment>data.sql</comment>
+    </changeSet>
+    
+    <changeSet id="test-data-07e47b15" author="vyudintsev">
+         <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT 1
+            </sqlCheck>
+        </preConditions> 
+        <sql>SELECT 1</sql>
+    </changeSet>
+
+</databaseChangeLog>
+
