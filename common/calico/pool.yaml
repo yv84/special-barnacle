@@ -1,0 +1,20 @@
+# calicoctl get ipPool --export -o yaml > pool.yaml
+# calicoctl replace -f pool.yaml
+apiVersion: projectcalico.org/v3
+items:
+- apiVersion: projectcalico.org/v3
+  kind: IPPool
+  metadata:
+    creationTimestamp: 2019-04-08T03:16:14Z
+    name: default-ipv4-ippool
+    resourceVersion: "3863828"
+    uid: aaba4945-59ac-11e9-a8f3-080027ccd7a2
+  spec:
+    blockSize: 26
+    cidr: 10.244.0.0/24 # kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}'
+    ipipMode: Always
+    natOutgoing: true
+    nodeSelector: all()
+kind: IPPoolList
+metadata:
+  resourceVersion: "3864727"
