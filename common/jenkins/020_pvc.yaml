@@ -1,0 +1,57 @@
+# kube-ops-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: kube-ops-storage
+  namespace: kube-ops
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-opspvc-claim0
+  namespace: kube-ops
+  labels:
+    type: local
+    app: kube-ops
+spec:
+  #storageClassName: kube-ops-storage
+  storageClassName: manual
+  capacity:
+    storage: 6Gi
+  accessModes:
+  - ReadWriteMany
+  claimRef:
+    namespace: kube-ops
+    name: opspvc-claim0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    # $ sudo chown -R 1000 /mnt/sbarnacle/kube-ops-storage/opspvc-claim0
+    path: "/mnt/sbarnacle/kube-ops-storage/opspvc-claim0"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - yv84.u2
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: opspvc-claim0
+  namespace: kube-ops
+  labels:
+    app: jenkins2
+spec:
+  #storageClassName: kube-ops-storage
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi

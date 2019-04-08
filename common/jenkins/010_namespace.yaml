@@ -1,0 +1,7 @@
+# https://www.qikqiak.com/post/kubernetes-jenkins1/
+# namespace.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: kube-ops
