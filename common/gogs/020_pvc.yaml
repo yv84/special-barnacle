@@ -1,0 +1,57 @@
+# git-gogs-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: git-gogs-storage
+  namespace: git-gogs
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: Immediate
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-gogs-claim0
+  namespace: git-gogs
+  labels:
+    type: local
+    app: git-gogs
+spec:
+  #storageClassName: git-gogs-storage
+  storageClassName: manual
+  capacity:
+    storage: 6Gi
+  accessModes:
+  - ReadWriteMany
+  claimRef:
+    namespace: git-gogs
+    name: gogs-claim0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    # $ sudo chown -R 1000 /mnt/sbarnacle/git-gogs-storage/gogs-claim0
+    path: "/mnt/sbarnacle/git-gogs-storage/gogs-claim0"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - yv84.u2
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gogs-claim0
+  namespace: git-gogs
+  labels:
+    app: gogs
+spec:
+  #storageClassName: git-gogs-storage
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
