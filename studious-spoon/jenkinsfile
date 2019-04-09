@@ -1,0 +1,76 @@
+node('jnlp-slave') {
+
+    stage('Clone') {
+        echo "1.Clone Stage"
+        git url: "http://gogs.git-gogs.svc.cluster.local:3000/yv84/special-barnacle.git"
+        sh "git clean -d -f"
+        script {
+            build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        }
+    }
+
+    stage('Test') {
+         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
+         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
+                "GRADLE_HOME=${tool 'gradle-5.2.1'}",
+                "PATH=${tool 'jdk-11'}/bin:${tool 'gradle-5.2.1'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                ]) {
+            sh 'java -version'
+            
+            echo "2.Test Stage"
+            dir ('studious-spoon') {
+                    sh 'echo ${GRADLE_HOME}'
+                    sh 'echo ${PATH}'
+                    
+                    sh 'chmod +x gradlew'
+                    sh 'gradle clean test'
+            }
+        }
+      
+    }
+
+    stage('Build gradle') {
+         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
+         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
+                "GRADLE_HOME=${tool 'gradle-5.2.1'}",
+                "PATH=${tool 'jdk-11'}/bin:${tool 'gradle-5.2.1'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                ]) {
+            sh 'java -version'
+            
+            echo "2.Build Stage"
+            dir ('studious-spoon') {
+                    sh 'chmod +x gradlew'
+                    sh 'gradle build'
+                    
+            }
+        }
+      
+    }
+
+    stage('Build docker') {
+        echo "3.Build Docker Image Stage"
+        dir ('studious-spoon') {
+            sh "sudo docker build -t sbarnacle/studious-spoon:${build_tag} ."
+        }
+    }
+
+    stage('Push docker') {
+        echo "4.Push Docker Image Stage"
+        withCredentials([usernamePassword(credentialsId: 'myregistrydomain.com', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+            sh "docker login -u ${USERNAME} -p ${PASSWORD} https://myregistrydomain.com:5000"
+            sh "docker tag sbarnacle/studious-spoon:${build_tag} myregistrydomain.com:5000/sbarnacle/studious-spoon:${build_tag}"
+            sh "docker push myregistrydomain.com:5000/sbarnacle/studious-spoon:${build_tag}"
+        }
+    }
+
+    stage('Deploy kube') {
+        echo "5. Deploy Stage"
+        dir ('studious-spoon') {
+            sh "cp -f studious-spoon.yaml studious-spoon-temp.yaml"
+            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' studious-spoon-temp.yaml"
+            sh "kubectl apply -f studious-spoon-temp.yaml"
+            sh "rm studious-spoon-temp.yaml"
+        }
+    }
+
+}
