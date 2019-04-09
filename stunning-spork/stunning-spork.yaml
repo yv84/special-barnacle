@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: stunning-spork
-        image: myregistrydomain.com:5000/sbarnacle/stunning-spork:1.0
+        image: myregistrydomain.com:5000/sbarnacle/stunning-spork:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
         - containerPort: 3000

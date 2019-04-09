@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: studious-spoon
-        image: myregistrydomain.com:5000/sbarnacle/studious-spoon:1.0
+        image: myregistrydomain.com:5000/sbarnacle/studious-spoon:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

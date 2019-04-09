@@ -18,7 +18,7 @@ node('jnlp-slave') {
             sh 'java -version'
             
             echo "2.Test Stage"
-            dir ('fluffy-invention') {
+            dir ('fuzzy-pancake') {
                     sh 'echo ${GRADLE_HOME}'
                     sh 'echo ${PATH}'
                     
@@ -38,7 +38,7 @@ node('jnlp-slave') {
             sh 'java -version'
             
             echo "2.Build Stage"
-            dir ('fluffy-invention') {
+            dir ('fuzzy-pancake') {
                     sh 'chmod +x gradlew'
                     sh 'gradle build'
                     
@@ -49,8 +49,8 @@ node('jnlp-slave') {
 
     stage('Build docker') {
         echo "3.Build Docker Image Stage"
-        dir ('fluffy-invention') {
-            sh "sudo docker build -t sbarnacle/fluffy-invention:${build_tag} ."
+        dir ('fuzzy-pancake') {
+            sh "sudo docker build -t sbarnacle/fuzzy-pancake:${build_tag} ."
         }
     }
 
@@ -58,18 +58,18 @@ node('jnlp-slave') {
         echo "4.Push Docker Image Stage"
         withCredentials([usernamePassword(credentialsId: 'myregistrydomain.com', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
             sh "docker login -u ${USERNAME} -p ${PASSWORD} https://myregistrydomain.com:5000"
-            sh "docker tag sbarnacle/fluffy-invention:${build_tag} myregistrydomain.com:5000/sbarnacle/fluffy-invention:${build_tag}"
-            sh "docker push myregistrydomain.com:5000/sbarnacle/fluffy-invention:${build_tag}"
+            sh "docker tag sbarnacle/fuzzy-pancake:${build_tag} myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:${build_tag}"
+            sh "docker push myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:${build_tag}"
         }
     }
 
     stage('Deploy kube') {
         echo "5. Deploy Stage"
-        dir ('fluffy-invention') {
-            sh "cp -f fluffy-invention.yaml fluffy-invention-temp.yaml"
-            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' fluffy-invention-temp.yaml"
-            sh "kubectl apply -f fluffy-invention-temp.yaml"
-            sh "rm fluffy-invention-temp.yaml"
+        dir ('fuzzy-pancake') {
+            sh "cp -f fuzzy-pancake.yaml fuzzy-pancake-temp.yaml"
+            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' fuzzy-pancake-temp.yaml"
+            sh "kubectl apply -f fuzzy-pancake-temp.yaml"
+            sh "rm fuzzy-pancake-temp.yaml"
         }
     }
 

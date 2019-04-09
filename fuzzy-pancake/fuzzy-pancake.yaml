@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fuzzy-pancake
-        image: myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:1.0
+        image: myregistrydomain.com:5000/sbarnacle/fuzzy-pancake:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
