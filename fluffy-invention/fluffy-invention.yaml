@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: fluffy-invention
-        image: myregistrydomain.com:5000/sbarnacle/fluffy-invention:1.0
+        image: myregistrydomain.com:5000/sbarnacle/fluffy-invention:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

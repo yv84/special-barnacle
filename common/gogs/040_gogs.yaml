@@ -25,7 +25,7 @@ spec:
           httpGet:
             path: /
             port: 3000
-          initialDelaySeconds: 60
+          initialDelaySeconds: 20
           timeoutSeconds: 5
           failureThreshold: 12
         readinessProbe:
@@ -51,7 +51,8 @@ metadata:
     name: gogs
 spec:
   ports:
-  - port: 3000
+  - name: "port3000"
+    port: 3000
     targetPort: 3000
     nodePort: 30130
   selector:
