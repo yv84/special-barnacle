@@ -9,44 +9,6 @@ node('jnlp-slave') {
         }
     }
 
-    stage('Test') {
-         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
-         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
-                "GRADLE_HOME=${tool 'gradle-5.2.1'}",
-                "PATH=${tool 'jdk-11'}/bin:${tool 'gradle-5.2.1'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-                ]) {
-            sh 'java -version'
-            
-            echo "2.Test Stage"
-            dir ('stunning-spork') {
-                    sh 'echo ${GRADLE_HOME}'
-                    sh 'echo ${PATH}'
-                    
-                    sh 'chmod +x gradlew'
-                    sh 'gradle clean test'
-            }
-        }
-      
-    }
-
-    stage('Build gradle') {
-         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
-         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
-                "GRADLE_HOME=${tool 'gradle-5.2.1'}",
-                "PATH=${tool 'jdk-11'}/bin:${tool 'gradle-5.2.1'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-                ]) {
-            sh 'java -version'
-            
-            echo "2.Build Stage"
-            dir ('stunning-spork') {
-                    sh 'chmod +x gradlew'
-                    sh 'gradle build'
-                    
-            }
-        }
-      
-    }
-
     stage('Build docker') {
         echo "3.Build Docker Image Stage"
         dir ('stunning-spork') {
