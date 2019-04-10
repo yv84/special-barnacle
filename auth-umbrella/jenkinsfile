@@ -1,0 +1,76 @@
+node('jnlp-slave') {
+
+    stage('Clone') {
+        echo "1.Clone Stage"
+        git url: "http://gogs.git-gogs.svc.cluster.local:3000/yv84/special-barnacle.git"
+        sh "git clean -d -f"
+        script {
+            build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        }
+    }
+
+    stage('Test') {
+         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
+         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
+                "MAVEN_HOME=${tool 'mvn-3.6.0'}",
+                "PATH=${tool 'jdk-11'}/bin:${tool 'mvn-3.6.0'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                ]) {
+            sh 'java -version'
+            
+            echo "2.Test Stage"
+            dir ('auth-umbrella') {
+                    sh 'echo ${MAVEN_HOME}'
+                    sh 'echo ${PATH}'
+                    
+                    sh 'chmod +x mvnw'
+                    sh 'mvn clean test'
+            }
+        }
+      
+    }
+
+    stage('Build maven') {
+         //withEnv(["JAVA_HOME=${tool 'jdk-11'}", "PATH=${tool 'jdk-11'}/bin:${env.PATH}"]) {
+         withEnv(["JAVA_HOME=${tool 'jdk-11'}", 
+                "MAVEN_HOME=${tool 'mvn-3.6.0'}",
+                "PATH=${tool 'jdk-11'}/bin:${tool 'mvn-3.6.0'}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+                ]) {
+            sh 'java -version'
+            
+            echo "2.Build Stage"
+            dir ('auth-umbrella') {
+                    sh 'chmod +x mvnw'
+                    sh 'mvn package'
+                    
+            }
+        }
+      
+    }
+
+    stage('Build docker') {
+        echo "3.Build Docker Image Stage"
+        dir ('auth-umbrella') {
+            sh "sudo docker build -t sbarnacle/auth-umbrella:${build_tag} ."
+        }
+    }
+
+    stage('Push docker') {
+        echo "4.Push Docker Image Stage"
+        withCredentials([usernamePassword(credentialsId: 'myregistrydomain.com', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+            sh "docker login -u ${USERNAME} -p ${PASSWORD} https://myregistrydomain.com:5000"
+            sh "docker tag sbarnacle/auth-umbrella:${build_tag} myregistrydomain.com:5000/sbarnacle/auth-umbrella:${build_tag}"
+            sh "docker push myregistrydomain.com:5000/sbarnacle/auth-umbrella:${build_tag}"
+        }
+    }
+
+    stage('Deploy kube') {
+        echo "5. Deploy Stage"
+        dir ('auth-umbrella') {
+            sh "cp -f auth-umbrella.yaml auth-umbrella-temp.yaml"
+            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' auth-umbrella-temp.yaml"
+            sh "kubectl apply -f auth-umbrella-temp.yaml"
+            sh "rm auth-umbrella-temp.yaml"
+        }
+    }
+
+}
