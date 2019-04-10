@@ -1,0 +1,37 @@
+node('jnlp-slave') {
+
+    stage('Clone') {
+        echo "1.Clone Stage"
+        git url: "http://gogs.git-gogs.svc.cluster.local:3000/yv84/special-barnacle.git"
+        sh "git clean -d -f"
+        script {
+            build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        }
+    }
+    
+    
+    stage('BuildDocker') {
+        echo "3.Build Docker Image Stage"
+        dir ('studious-spoon/psql/liquidbase') {
+            sh "sudo docker build -t sbarnacle/psql-lb-job:${build_tag} ."
+        }
+    }
+
+    stage('PushPocker') {
+        echo "4.Push Docker Image Stage"
+        withCredentials([usernamePassword(credentialsId: 'myregistrydomain.com', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+            sh "docker login -u ${USERNAME} -p ${PASSWORD} https://myregistrydomain.com:5000"
+            sh "docker tag sbarnacle/psql-lb-job:${build_tag} myregistrydomain.com:5000/sbarnacle/psql-lb-job:${build_tag}"
+            sh "docker push myregistrydomain.com:5000/sbarnacle/psql-lb-job:${build_tag}"
+        }
+    }
+    
+
+    stage('Deploy kube') {
+        echo "3.Build Docker Image Stage"
+        dir ('studious-spoon/psql/liquidbase') {
+            sh "kubectl apply -f psql-lb-job.yaml"
+        }
+    }
+
+}

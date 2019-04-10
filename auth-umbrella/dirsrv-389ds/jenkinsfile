@@ -1,0 +1,19 @@
+node('jnlp-slave') {
+
+    stage('Clone') {
+        echo "1.Clone Stage"
+        git url: "http://gogs.git-gogs.svc.cluster.local:3000/yv84/special-barnacle.git"
+        sh "git clean -d -f"
+        script {
+            build_tag = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        }
+    }
+
+    stage('Deploy kube') {
+        echo "3.Build Docker Image Stage"
+        dir ('auth-umbrella/dirsrv-389ds') {
+            sh "kubectl apply -f dirsrv-389.yaml"
+        }
+    }
+
+}
