@@ -6,7 +6,7 @@ metadata:
   name: kube-ops-storage
   namespace: kube-ops
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: Immediate
+volumeBindingMode: WaitForFirstConsumer
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -17,8 +17,7 @@ metadata:
     type: local
     app: kube-ops
 spec:
-  #storageClassName: kube-ops-storage
-  storageClassName: manual
+  storageClassName: kube-ops-storage
   capacity:
     storage: 6Gi
   accessModes:
@@ -48,8 +47,7 @@ metadata:
   labels:
     app: jenkins2
 spec:
-  #storageClassName: kube-ops-storage
-  storageClassName: manual
+  storageClassName: kube-ops-storage
   accessModes:
   - ReadWriteMany
   resources:

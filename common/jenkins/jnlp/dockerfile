@@ -1,0 +1,42 @@
+# sudo docker build -t yv84/jenkins-jnlp:1.0 .
+# sudo docker tag yv84/jenkins-jnlp:1.0 myregistrydomain.com:5000/yv84/jenkins-jnlp:1.0
+# sudo docker push myregistrydomain.com:5000/yv84/jenkins-jnlp:1.0
+
+FROM jenkins/jnlp-slave:3.27-1
+USER root
+
+
+ENV TIMEZONE=Europe/Moscow \
+    LANG=ru_RU.UTF-8
+
+RUN echo "${TIMEZONE}" > /etc/timezone \
+    && echo "$LANG UTF-8" > /etc/locale.gen \
+    && apt-get update -q \
+    && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
+    && mkdir -p /home/jenkins/.jenkins \
+    && mkdir -p /home/jenkins/agent \
+    && mkdir -p /usr/share/jenkins \
+    && mkdir -p /root/.kube
+
+# copy installed kubectl to container cp /usr/bin/kubectl kubectl
+COPY kubectl /usr/local/bin/kubectl
+
+# DinD/svn/jnlp
+RUN  DEBIAN_FRONTEND=noninteractive apt-get install -yq curl apt-utils dialog locales  apt-transport-https build-essential bzip2 ca-certificates  sudo jq unzip zip gnupg2 software-properties-common \
+     && update-locale LANG=$LANG \
+     && locale-gen $LANG \
+     && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
+     &&curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg |apt-key add - \
+     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable" \
+     && apt-get update -y \
+     && apt-get install -y docker-ce \
+     && usermod -a -G docker jenkins \
+     && sed -i '/^root/a\jenkins    ALL=(ALL:ALL) NOPASSWD:ALL' /etc/sudoers
+
+USER root
+
+WORKDIR /home/jenkins
+
+ENTRYPOINT ["jenkins-slave"]
+
+
