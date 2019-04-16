@@ -1,0 +1,47 @@
+# dirsrv-389ds-storage.yaml
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: dirsrv-389ds-storage
+  namespace: sbarnacle
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-dirsrv-389ds-claim0
+  namespace: sbarnacle
+  labels:
+    type: local
+    app: dirsrv-389ds
+spec:
+  storageClassName: dirsrv-389ds-storage
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  claimRef:
+    namespace: sbarnacle
+    name: dirsrv-389ds-claim0
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/sbarnacle/dirsrv-389ds-storage/dirsrv-389ds-claim0"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dirsrv-389ds-claim0
+  namespace: sbarnacle
+  labels:
+    app: dirsrv-389ds
+spec:
+  storageClassName: dirsrv-389ds-storage
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+

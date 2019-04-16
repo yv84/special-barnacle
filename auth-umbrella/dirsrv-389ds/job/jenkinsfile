@@ -26,12 +26,24 @@ node('jnlp-slave') {
         }
     }
     
-
-    stage('Deploy kube') {
-        echo "3.Build Docker Image Stage"
+    
+    stage('Deploy kube dirsrv-389ds') {
+        echo "4. Deploy Stage"
+                
         dir ('auth-umbrella/dirsrv-389ds/job') {
-            sh "kubectl apply -f dirsrv-389ds-job.yaml"
+            sh "cp -f dirsrv-389ds-job.yaml dirsrv-389ds-job-temp.yaml"
+            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' dirsrv-389ds-job-temp.yaml"
+            sh "kubectl delete job --ignore-not-found=true -n sbarnacle sbarnacle-dirsrv-389ds-job"
+            sh "kubectl apply -f dirsrv-389ds-job-temp.yaml"
+            sh "rm dirsrv-389ds-job-temp.yaml"
         }
     }
+    
+    
+    stage('Clean up') {
+        echo "5. Clean up"
+        deleteDir()
+    }
+    
 
 }

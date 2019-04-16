@@ -127,6 +127,14 @@ spec:
         ports:
         - containerPort: 389
           name: ldap
+        volumeMounts:
+         # the location of instance and configuration data 
+         - name: conf
+           mountPath: /etc/dirsrv
+         # the location of directory server DB
+         - name: data
+           mountPath: /var/lib/dirsrv
+         # /var/log/dirsrv - the logs of the directory server - Local ephemeral storage
       serviceAccountName: dirsrv-389ds
 
 # dirsrv-389ds-svc.yml

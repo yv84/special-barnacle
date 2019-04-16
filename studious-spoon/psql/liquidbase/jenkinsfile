@@ -31,7 +31,19 @@ node('jnlp-slave') {
         echo "3.Build Docker Image Stage"
         dir ('studious-spoon/psql/liquidbase') {
             sh "kubectl apply -f psql-lb-job.yaml"
+            
+            sh "cp -f psql-lb-job.yaml psql-lb-job-temp.yaml"
+            sh "sed -i 's/<BUILD_TAG>/${build_tag}/' psql-lb-job-temp.yaml"
+            sh "kubectl delete job --ignore-not-found=true -n sbarnacle psql-lb-job"
+            sh "kubectl apply -f psql-lb-job-temp.yaml"
+            sh "rm psql-lb-job-temp.yaml"
         }
     }
+    
+    stage('Clean up') {
+        echo "5. Clean up"
+        deleteDir()
+    }
+    
 
 }

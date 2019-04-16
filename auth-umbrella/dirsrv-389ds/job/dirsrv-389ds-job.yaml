@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: sbarnacle-dirsrv-389ds-job
-        image: myregistrydomain.com:5000/sbarnacle/dirsrv-389ds-job:1.1
+        image: myregistrydomain.com:5000/sbarnacle/dirsrv-389ds-job:<BUILD_TAG>
         imagePullPolicy: Always
         command: ["dirsrv-389ds_command.sh"]
       restartPolicy: Never

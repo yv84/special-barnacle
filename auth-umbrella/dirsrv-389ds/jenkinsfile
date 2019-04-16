@@ -12,8 +12,15 @@ node('jnlp-slave') {
     stage('Deploy kube') {
         echo "3.Build Docker Image Stage"
         dir ('auth-umbrella/dirsrv-389ds') {
-            sh "kubectl apply -f dirsrv-389.yaml"
+            sh "kubectl apply -f 10_dirsrv-389ds-pvc.yaml"
+            sh "kubectl apply -f 20_dirsrv-389.yaml"
         }
     }
+
+    stage('Clean up') {
+        echo "3. Clean up"
+        deleteDir()
+    }
+
 
 }
