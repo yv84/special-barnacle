@@ -14,7 +14,7 @@ spec:
       containers:
       - name: psql-lb-job
         # https://github.com/sequenceiq/docker-liquibase
-        image: myregistrydomain.com:5000/sbarnacle/psql-lb-job:1.0
+        image: myregistrydomain.com:5000/sbarnacle/psql-lb-job:<BUILD_TAG>
         imagePullPolicy: Always
         command: ["liquibase_command.sh", "update"]
         env:
